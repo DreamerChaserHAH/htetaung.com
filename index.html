@@ -4,7 +4,6 @@
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>HTET AUNG HLAING</title>
-    <link rel="manifest" href="manifest.json"/>
     <style>
 
       html, body{
@@ -127,7 +126,7 @@
 
     
     <div class="emscripten_border">
-      <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" onclick="openFullscreen()" tabindex=-1></canvas>
+      <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
     </div>
 
     <script type='text/javascript'>
@@ -208,17 +207,6 @@
       function resizeCanvas(){
         console.log("Trying");
         canvas.style.height = '100%';
-      }
-
-      function openFullscreen() {
-        if (canvas.requestFullscreen) {
-          canvas.requestFullscreen();
-        } else if (canvas.webkitRequestFullscreen) { /* Safari */
-          canvas.webkitRequestFullscreen();
-        } else if (canvas.msRequestFullscreen) { /* IE11 */
-          canvas.msRequestFullscreen();
-        }
-        screen.orientation.lock('landscape');
       }
     </script>
     <script async type="text/javascript" src="portfolio.js"></script>
