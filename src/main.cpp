@@ -5,6 +5,22 @@
 #include <yorha.h>
 #include <raylib.h>
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten/emscripten.h>
+#include <emscripten/bind.h>
+#include <emscripten/val.h>
+
+using namespace emscripten;
+#endif
+
+enum Screen: uint8_t{
+    HOME,
+    ABOUT,
+    PROJECTS,
+    SKILLS,
+    CONTACT
+};
+
 Font font;
 Texture NavIcons[5];
 Music BackgroundMusic;
@@ -16,17 +32,9 @@ uint8_t global_transparency;
 bool increasing;
 bool IsMouseHovering = false;
 bool ShouldPlayMouseHover = true;
+Screen currentScreen = HOME;
 
-enum NavIconType
-{
-    HOMEICON,
-    ABOUTICON,
-    PROJECTSICON,
-    SKILLSICON,
-    CONTACTICON
-};
-
-Texture &GetNavIcon(NavIconType type)
+Texture &GetNavIcon(Screen type)
 {
     return NavIcons[type];
 }
@@ -34,14 +42,14 @@ Texture &GetNavIcon(NavIconType type)
 void DrawHeader(const char *text, Vector2 position, int fontSize)
 {
     Vector2 textSize = MeasureTextEx(font, text, fontSize, 0);
-    DrawTextEx(font, text, Vector2(position.x + 10 - textSize.x / 2, position.y + 10 - textSize.y / 2), fontSize, 0, BACKGROUND_TERTIARY);
-    DrawTextEx(font, text, Vector2(position.x - textSize.x / 2, position.y - textSize.y / 2), fontSize, 0, FOREGROUND_MAIN);
+    DrawTextEx(font, text, Vector2{position.x + 10 - textSize.x / 2, position.y + 10 - textSize.y / 2}, fontSize, 0, BACKGROUND_TERTIARY);
+    DrawTextEx(font, text, Vector2{position.x - textSize.x / 2, position.y - textSize.y / 2}, fontSize, 0, FOREGROUND_MAIN);
 }
 
 void DrawNormalText(const char *text, Vector2 position, int fontSize)
 {
     Vector2 textSize = MeasureTextEx(font, text, fontSize, 0);
-    DrawTextEx(font, text, Vector2(position.x - textSize.x / 2, position.y - textSize.y / 2), fontSize, 0, FOREGROUND_MAIN);
+    DrawTextEx(font, text, Vector2{position.x - textSize.x / 2, position.y - textSize.y / 2}, fontSize, 0, FOREGROUND_MAIN);
 }
 
 void DrawFlickingText(const char *text, Vector2 position, int fontSize)
@@ -50,7 +58,7 @@ void DrawFlickingText(const char *text, Vector2 position, int fontSize)
     global_transparency += (increasing) ? global_transparency++ : global_transparency--;
 
     Vector2 textSize = MeasureTextEx(font, text, fontSize, 0);
-    DrawTextEx(font, text, Vector2(position.x - textSize.x / 2, position.y - textSize.y / 2), fontSize, 0, Color{FOREGROUND_MAIN.r, FOREGROUND_MAIN.g, FOREGROUND_MAIN.b, global_transparency});
+    DrawTextEx(font, text, Vector2{position.x - textSize.x / 2, position.y - textSize.y / 2}, fontSize, 0, Color{FOREGROUND_MAIN.r, FOREGROUND_MAIN.g, FOREGROUND_MAIN.b, global_transparency});
 }
 
 void DrawBackground()
@@ -74,25 +82,25 @@ void DrawNavLines()
     DrawLine(0, SCREEN_HEIGHT - 61, SCREEN_WIDTH, SCREEN_HEIGHT - 61, FOREGROUND_MAIN);
 }
 
-void DrawNavButton(float positionX, float positionY, int iconId, const char *text, NavIconType iconType)
+void DrawNavButton(float positionX, float positionY, int iconId, const char *text, Screen iconType)
 {
     Color ForegroundColor = FOREGROUND_MAIN;
     Color BackgroundColor = BACKGROUND_TERTIARY;
     Vector2 mousePosition = GetMousePosition();
 
-    if (mousePosition.x >= positionX && mousePosition.x <= positionX + 190)
+    if ((mousePosition.x >= positionX && mousePosition.x <= positionX + 190 && mousePosition.y >= positionY && mousePosition.y <= positionY + 35))
     {
-        if (mousePosition.y >= positionY && mousePosition.y <= positionY + 35)
-        {
             ForegroundColor = BACKGROUND_TERTIARY;
             BackgroundColor = FOREGROUND_MAIN;
             IsMouseHovering = true;
-        }
     }
-    // GuiButton(Rectangle(positionX, positionY, 200, 40), "Hi");
-    // GuiLabel(Rectangle(positionX, positionY, 200, 40), "Hi");
-    // GuiSetStyle(BUTTON, TEXT_ALIGNMENT, TEXT_ALIGN_LEFT);
-    // GuiButton(Rectangle(positionX, positionY, 190, 40), GuiIconText(iconId, text));
+
+    if(iconType == currentScreen){
+        ForegroundColor = BACKGROUND_TERTIARY;
+        BackgroundColor = FOREGROUND_MAIN;
+        DrawRectangle(positionX, positionY, 190, 50, BackgroundColor);
+    }
+
     DrawRectangle(positionX, positionY, 190, 35, BackgroundColor);
     DrawTextEx(font, text, Vector2{positionX + 25, positionY + 1}, 34, 0, ForegroundColor);
     DrawTexture(GetNavIcon(iconType), positionX + 3, positionY + 7, ForegroundColor);
@@ -100,13 +108,13 @@ void DrawNavButton(float positionX, float positionY, int iconId, const char *tex
 
 void DrawNavBar()
 {
-    DrawNavButton(140, 10, 185, "HOME", HOMEICON);
-    DrawNavButton(350, 10, 186, "ABOUT", ABOUTICON);
-    DrawNavButton(560, 10, 178, "PROJECTS", PROJECTSICON);
-    DrawNavButton(770, 10, 149, "SKILLS", SKILLSICON);
-    DrawNavButton(980, 10, 191, "CONTACT", CONTACTICON);
+    DrawNavButton(140, 10, 185, "HOME", HOME);
+    DrawNavButton(350, 10, 186, "ABOUT", ABOUT);
+    DrawNavButton(560, 10, 178, "PROJECTS", PROJECTS);
+    DrawNavButton(770, 10, 149, "SKILLS", SKILLS);
+    DrawNavButton(980, 10, 191, "CONTACT", CONTACT);
     DrawNavLines();
-    DrawNormalText("Copyrighted 2024 by HTET AUNG HLAING", Vector2(SCREEN_WIDTH / 2, SCREEN_HEIGHT - 30), 15);
+    DrawNormalText("Copyrighted 2024 by HTET AUNG HLAING", Vector2{SCREEN_WIDTH / 2, SCREEN_HEIGHT - 30}, 15);
 }
 
 void UpdateTransparency()
@@ -133,6 +141,11 @@ int main()
 {
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Portfolio");
     InitAudioDevice();
+
+    #ifdef __EMSCRIPTEN__
+        emscripten::val::global("window").call<void>("resizeCanvas");
+    #endif
+
     GuiLoadStyleYorha();
 
     font = LoadFontEx("resources/font.ttf", 72, 0, 0);
@@ -160,9 +173,9 @@ int main()
         DrawBackground();
         DrawNavBar();
 
-        DrawHeader("HTET AUNG HLAING", Vector2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2), 96);
-        DrawNormalText("DARE TO MAKE A NEW WAY", Vector2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 50), 16);
-        DrawFlickingText("Use your arrows keys or mouse button switch between menus", Vector2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 250), 16);
+        DrawHeader("HTET AUNG HLAING", Vector2{SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2}, 96);
+        DrawNormalText("DARE TO MAKE A NEW WAY", Vector2{SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 50}, 16);
+        DrawFlickingText("Use your arrows keys or mouse button switch between menus", Vector2{SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 250}, 16);
 
         // DrawTextEx(font, "HTET AUNG HLAING", Vector2(SCREEN_WIDTH/2 + 10, SCREEN_HEIGHT/2 + 10), 96, 0, BACKGROUND_TERTIARY);
         // DrawTextEx(font, "HTET AUNG HLAING", Vector2(SCREEN_WIDTH/2, SCREEN_HEIGHT/2), 96, 0, FOREGROUND_MAIN);
