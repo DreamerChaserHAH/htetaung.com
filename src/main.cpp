@@ -1,9 +1,12 @@
 #include <chrono>
+#include <iostream>
+
+#include <raygui.h>
+#include <raylib.h>
 
 #include <game-config.h>
-#include <raygui.h>
-#include <yorha.h>
-#include <raylib.h>
+#include <projects.hpp>
+#include <text.hpp>
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten/emscripten.h>
@@ -12,6 +15,8 @@
 
 using namespace emscripten;
 #endif
+
+using std::cout, std::endl;
 
 enum Screen: uint8_t{
     HOME,
@@ -24,7 +29,7 @@ enum Screen: uint8_t{
 Font font;
 Texture NavIcons[5];
 Music BackgroundMusic;
-Sound ClickEffect;
+Sound clickEffect;
 
 const std::chrono::milliseconds interval(FLICKERING_INTERVAL);
 auto lastChangedTime = std::chrono::steady_clock::now();
@@ -37,28 +42,6 @@ Screen currentScreen = HOME;
 Texture &GetNavIcon(Screen type)
 {
     return NavIcons[type];
-}
-
-void DrawHeader(const char *text, Vector2 position, int fontSize)
-{
-    Vector2 textSize = MeasureTextEx(font, text, fontSize, 0);
-    DrawTextEx(font, text, Vector2{position.x + 10 - textSize.x / 2, position.y + 10 - textSize.y / 2}, fontSize, 0, BACKGROUND_TERTIARY);
-    DrawTextEx(font, text, Vector2{position.x - textSize.x / 2, position.y - textSize.y / 2}, fontSize, 0, FOREGROUND_MAIN);
-}
-
-void DrawNormalText(const char *text, Vector2 position, int fontSize, bool centeralignment = true)
-{
-    Vector2 textSize = MeasureTextEx(font, text, fontSize, 0);
-    DrawTextEx(font, text, Vector2{position.x + (centeralignment? -textSize.x / 2: 0), position.y - textSize.y / 2}, fontSize, 0, FOREGROUND_MAIN);
-}
-
-void DrawFlickingText(const char *text, Vector2 position, int fontSize)
-{
-
-    global_transparency += (increasing) ? global_transparency++ : global_transparency--;
-
-    Vector2 textSize = MeasureTextEx(font, text, fontSize, 0);
-    DrawTextEx(font, text, Vector2{position.x - textSize.x / 2, position.y - textSize.y / 2}, fontSize, 0, Color{FOREGROUND_MAIN.r, FOREGROUND_MAIN.g, FOREGROUND_MAIN.b, global_transparency});
 }
 
 void DrawBackground()
@@ -93,7 +76,9 @@ void DrawNavButton(float positionX, float positionY, int iconId, const char *tex
             ForegroundColor = BACKGROUND_TERTIARY;
             BackgroundColor = FOREGROUND_MAIN;
             IsMouseHovering = true;
-            currentScreen = iconType;
+            if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+                currentScreen = iconType;
+            }
     }
 
     if(iconType == currentScreen){
@@ -102,7 +87,7 @@ void DrawNavButton(float positionX, float positionY, int iconId, const char *tex
         DrawRectangle(positionX, positionY, 190, 50, BackgroundColor);
     }
 
-    DrawRectangle(positionX, positionY, 190, 35, BackgroundColor);
+    DrawRectangle(positionX, positionY, 190, BUTTON_HEIGHT, BackgroundColor);
     DrawTextEx(font, text, Vector2{positionX + 25, positionY + 1}, 34, 0, ForegroundColor);
     DrawTexture(GetNavIcon(iconType), positionX + 3, positionY + 7, ForegroundColor);
 }
@@ -115,7 +100,7 @@ void DrawNavBar()
     DrawNavButton(770, 10, 149, "SKILLS", SKILLS);
     DrawNavButton(980, 10, 191, "CONTACT", CONTACT);
     DrawNavLines();
-    DrawNormalText("Copyrighted 2024 by HTET AUNG HLAING", Vector2{SCREEN_WIDTH / 2, SCREEN_HEIGHT - 30}, 15);
+    DrawNormalText("Copyrighted 2024 by HTET AUNG HLAING", Vector2{SCREEN_WIDTH / 2, SCREEN_HEIGHT - 30}, 15, true);
 }
 
 void UpdateTransparency()
@@ -139,13 +124,17 @@ void UpdateTransparency()
 }
 
 void DrawHomeScreen(){
+    DrawFlickingText("I am looking to fill an backend internship role in 2025 June", Vector2{SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 250}, 20);
+    DrawNormalText("ASPIRING ENTREPRENEUR/DEVELOPER", Vector2{SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 50}, 18, true);
     DrawHeader("HTET AUNG HLAING", Vector2{SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2}, 96);
-    DrawNormalText("DARE TO MAKE A NEW WAY", Vector2{SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 50}, 18);
+    DrawNormalText("DARE TO MAKE A NEW WAY", Vector2{SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 50}, 18, true);
     DrawFlickingText("Use your arrows keys or mouse button switch between menus", Vector2{SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 250}, 16);
 }
 
 void DrawAboutScreen(){
     DrawHeader("HTET AUNG HLAING", Vector2{335, 130}, 64);
+    DrawNormalText("Age : 21; MBTI : ENTP; TimeZone: GMT+8;", Vector2{335, 155}, 16, true);
+
     DrawNormalText("My mission is to boldly push boundaries and embrace uncertainty,", Vector2{140, 180}, 20, false);
     DrawNormalText("daring to take risks in pursuit of creativity, knowledge and growth. I thrive on", Vector2{140, 180 + 18}, 20, false);
     DrawNormalText("challenges and embrace failure as an opportunity to learn and evolve. I aim to", Vector2{140, 180 + 18 * 2}, 20, false);
@@ -195,8 +184,6 @@ int main()
         emscripten::val::global("window").call<void>("resizeCanvas");
     #endif
 
-    GuiLoadStyleYorha();
-
     font = LoadFontEx("resources/font.ttf", 72, 0, 0);
 
     NavIcons[0] = LoadTexture("resources/sprites/home.png");
@@ -206,13 +193,13 @@ int main()
     NavIcons[4] = LoadTexture("resources/sprites/contact.png");
     
     BackgroundMusic = LoadMusicStream("resources/bg.mp3");
-    ClickEffect = LoadSound("resources/click.wav");
+    clickEffect = LoadSound("resources/click.wav");
 
     PlayMusicStream(BackgroundMusic);
-
     GenTextureMipmaps(&font.texture);
     SetTextureFilter(font.texture, TEXTURE_FILTER_BILINEAR);
 
+    Projects projects = Projects();
     // Define the camera to look into our 3d world
     Camera3D camera = { 0 };
     camera.position = (Vector3){ 5.0f, 5.0f, 5.0f };   // Camera position
@@ -249,6 +236,9 @@ int main()
             case ABOUT:
                 DrawAboutScreen();
                 break;
+            case PROJECTS:
+                projects.DrawProjects();
+                break;
             default:
                 DrawHomeScreen();
                 break;
@@ -261,7 +251,7 @@ int main()
         UpdateTransparency();
         UpdateMusicStream(BackgroundMusic);
         if(IsMouseHovering && ShouldPlayMouseHover){
-            PlaySound(ClickEffect);
+            PlaySound(clickEffect);
             ShouldPlayMouseHover = false;
         }
 
