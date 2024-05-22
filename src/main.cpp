@@ -46,10 +46,10 @@ void DrawHeader(const char *text, Vector2 position, int fontSize)
     DrawTextEx(font, text, Vector2{position.x - textSize.x / 2, position.y - textSize.y / 2}, fontSize, 0, FOREGROUND_MAIN);
 }
 
-void DrawNormalText(const char *text, Vector2 position, int fontSize)
+void DrawNormalText(const char *text, Vector2 position, int fontSize, bool centeralignment = true)
 {
     Vector2 textSize = MeasureTextEx(font, text, fontSize, 0);
-    DrawTextEx(font, text, Vector2{position.x - textSize.x / 2, position.y - textSize.y / 2}, fontSize, 0, FOREGROUND_MAIN);
+    DrawTextEx(font, text, Vector2{position.x + (centeralignment? -textSize.x / 2: 0), position.y - textSize.y / 2}, fontSize, 0, FOREGROUND_MAIN);
 }
 
 void DrawFlickingText(const char *text, Vector2 position, int fontSize)
@@ -93,6 +93,7 @@ void DrawNavButton(float positionX, float positionY, int iconId, const char *tex
             ForegroundColor = BACKGROUND_TERTIARY;
             BackgroundColor = FOREGROUND_MAIN;
             IsMouseHovering = true;
+            currentScreen = iconType;
     }
 
     if(iconType == currentScreen){
@@ -137,6 +138,54 @@ void UpdateTransparency()
     }
 }
 
+void DrawHomeScreen(){
+    DrawHeader("HTET AUNG HLAING", Vector2{SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2}, 96);
+    DrawNormalText("DARE TO MAKE A NEW WAY", Vector2{SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 50}, 18);
+    DrawFlickingText("Use your arrows keys or mouse button switch between menus", Vector2{SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 250}, 16);
+}
+
+void DrawAboutScreen(){
+    DrawHeader("HTET AUNG HLAING", Vector2{335, 130}, 64);
+    DrawNormalText("My mission is to boldly push boundaries and embrace uncertainty,", Vector2{140, 180}, 20, false);
+    DrawNormalText("daring to take risks in pursuit of creativity, knowledge and growth. I thrive on", Vector2{140, 180 + 18}, 20, false);
+    DrawNormalText("challenges and embrace failure as an opportunity to learn and evolve. I aim to", Vector2{140, 180 + 18 * 2}, 20, false);
+    DrawNormalText("inspire others, disrupt existing norms and make impact through my effort.", Vector2{140, 180 + 18 * 3}, 20, false);
+
+    DrawNormalText("I have been passionate about programming since I was 12. Starting ", Vector2{140, 180 + 18 * 5}, 20, false);
+    DrawNormalText("out together with my cousin in a local technology class, I fell in love with the", Vector2{140, 180 + 18 * 6}, 20, false);
+    DrawNormalText("aspect of creating whatever we wish digitally through the keyboard and mouse.", Vector2{140, 180 + 18 * 7}, 20, false);
+
+    DrawNormalText("And then, I came across Unity Game Engine, which I proceeded to spend", Vector2{140, 180 + 18 * 9}, 20, false);
+    DrawNormalText("more than 5-6 years creating prototypes after prototypes just for fun without any", Vector2{140, 180 + 18 * 10}, 20, false);
+    DrawNormalText("external motivation. I realized I found my ikigai.", Vector2{140, 180 + 18 * 11}, 20, false);
+
+    DrawNormalText("This was further enhanced by the fact that I was invited to collaborate", Vector2{140, 180 + 18 * 13}, 20, false);
+    DrawNormalText("within an organization to develop games that made a hit on the market", Vector2{140, 180 + 18 * 14}, 20, false);
+    DrawNormalText("Using that previous experience, I was able to hop onto", Vector2{140, 180 + 18 * 15}, 20, false);
+    DrawNormalText("freelance projects relatively easier", Vector2{140, 180 + 18 * 16}, 20, false);
+
+    DrawNormalText("Right now, I am an active student/freelancer hoping to expand my knowledge", Vector2{140, 180 + 18 * 18}, 20, false);
+    DrawNormalText("further while specializing in AI, C++ and Rapid Application Development.", Vector2{140, 180 + 18 * 19}, 20, false);
+
+    DrawNormalText("Looking forward to collaborate with ya <3", Vector2{140, 180 + 18 * 21}, 20, false);
+
+    DrawHeader("EXPERIENCES", Vector2{800, 134}, 48);
+    DrawNormalText("Research Assistant @ Centre of Research and Development of IOT (APU) - Present", Vector2{703, 180}, 20, false);
+    DrawNormalText("Research Head @ Competitive Programming Club (APU) - Present", Vector2{703, 180 + 18}, 20, false);
+    DrawNormalText("Freelance Software Developer @ Gnosis Labs - 2023", Vector2{703, 180 + 18 * 2}, 20, false);
+    DrawNormalText("Project Manager/ Game Developer @ UNDISCLOSED - 2022", Vector2{703, 180 + 18 * 3}, 20, false);
+
+    DrawHeader("TECHNOLOGIES AND TOOLS", Vector2{910, 180 + 18 * 6}, 48);
+    DrawNormalText("- Docker", Vector2{703, 180 + 18 * 8}, 20, false);
+    DrawNormalText("- Emscripten", Vector2{703, 180 + 18 * 9}, 20, false);
+    DrawNormalText("- C++", Vector2{703, 180 + 18 * 10}, 20, false);
+    DrawNormalText("- C#", Vector2{703, 180 + 18 * 11}, 20, false);
+    DrawNormalText("- Firebase", Vector2{703, 180 + 18 * 12}, 20, false);
+    DrawNormalText("- Supabase", Vector2{703, 180 + 18 * 13}, 20, false);
+    DrawNormalText("- AWS", Vector2{703, 180 + 18 * 14}, 20, false);
+    DrawNormalText("- Unity", Vector2{703, 180 + 18 * 15}, 20, false);
+}
+
 int main()
 {
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Portfolio");
@@ -164,18 +213,46 @@ int main()
     GenTextureMipmaps(&font.texture);
     SetTextureFilter(font.texture, TEXTURE_FILTER_BILINEAR);
 
+    // Define the camera to look into our 3d world
+    Camera3D camera = { 0 };
+    camera.position = (Vector3){ 5.0f, 5.0f, 5.0f };   // Camera position
+    camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };          // Camera looking at point
+    camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };              // Camera up vector (rotation towards target)
+    camera.fovy = 45.0f;                                    // Camera field-of-view Y
+    camera.projection = CAMERA_PERSPECTIVE;                 // Camera projection type
+
+    int camera_mode = CAMERA_ORBITAL;
+
+    Vector3 cubePosition = { 0.0f, 1.0f, 0.0f };
+    Vector3 cubeSize = { 2.0f, 2.0f, 2.0f };
+
     SetTargetFPS(60);
     while (!WindowShouldClose())
     {   
         IsMouseHovering = false;
+        UpdateCamera(&camera, camera_mode);
 
         BeginDrawing();
+
         DrawBackground();
+        
+        BeginMode3D(camera);
+        //DrawGrid(15, 2.0f);
+        DrawCubeWires(Vector3{0, 0, 0}, 2, 2, 2, BLACK);
+        EndMode3D();
         DrawNavBar();
 
-        DrawHeader("HTET AUNG HLAING", Vector2{SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2}, 96);
-        DrawNormalText("DARE TO MAKE A NEW WAY", Vector2{SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 50}, 16);
-        DrawFlickingText("Use your arrows keys or mouse button switch between menus", Vector2{SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 250}, 16);
+        switch(currentScreen){
+            case HOME:
+                DrawHomeScreen();
+                break;
+            case ABOUT:
+                DrawAboutScreen();
+                break;
+            default:
+                DrawHomeScreen();
+                break;
+        }
 
         // DrawTextEx(font, "HTET AUNG HLAING", Vector2(SCREEN_WIDTH/2 + 10, SCREEN_HEIGHT/2 + 10), 96, 0, BACKGROUND_TERTIARY);
         // DrawTextEx(font, "HTET AUNG HLAING", Vector2(SCREEN_WIDTH/2, SCREEN_HEIGHT/2), 96, 0, FOREGROUND_MAIN);
