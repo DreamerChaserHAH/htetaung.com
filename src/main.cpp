@@ -206,7 +206,7 @@ int main()
     
     if(resolutionX > SCREEN_WIDTH && resolutionY > SCREEN_HEIGHT){
         SCREEN_WIDTH = resolutionX > resolutionY? resolutionX : resolutionY;
-        SCREEN_HEIGHT = resolutionY > resolutionY? resolutionX : resolutionY;
+        SCREEN_HEIGHT = resolutionY > resolutionY? resolutionY : resolutionX;
     }else{
         float factor = resolutionX/resolutionY;
 
