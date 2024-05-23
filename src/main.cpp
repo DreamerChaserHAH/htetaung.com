@@ -14,6 +14,15 @@
 #include <emscripten/val.h>
 
 using namespace emscripten;
+
+    EM_JS(int, canvas_get_width, (), {
+        return window.screen.width * window.devicePixelRatio;
+    });
+
+    EM_JS(int, canvas_get_height, (), {
+        return window.screen.height * window.devicePixelRatio;
+    });
+
 #endif
 
 using std::cout, std::endl;
@@ -191,10 +200,18 @@ void Update(){
 int main()
 {   
     #ifdef __EMSCRIPTEN__
-    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+    //SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+    int w = canvas_get_width();
+    int y = canvas_get_height();
+    cout << w << " " << y << " \n";
+    SCREEN_WIDTH = w > y? w: y;
+    SCREEN_HEIGHT = w > y? y: w;
+    SCREEN_WIDTH *= 0.9;
+    SCREEN_HEIGHT *= 0.9;
+    cout << SCREEN_WIDTH << " " << SCREEN_HEIGHT << " \n";
     #endif
 
-    InitWindow(1920, 1080, "Portfolio");
+    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Portfolio");
     InitAudioDevice();
 
     #ifdef __EMSCRIPTEN__
