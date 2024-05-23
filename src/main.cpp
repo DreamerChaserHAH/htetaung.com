@@ -194,7 +194,7 @@ int main()
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     #endif
 
-    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Portfolio");
+    InitWindow(1920, 1080, "Portfolio");
     InitAudioDevice();
 
     #ifdef __EMSCRIPTEN__
