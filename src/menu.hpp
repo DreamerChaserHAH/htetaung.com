@@ -41,9 +41,6 @@ class ListMenu{
 
 class SimpleWindow{
 
-    Vector2 position;
-    Vector2 size;
-
     int headerBarHeight = 20;
 
     void DrawHeaderBar();
@@ -51,6 +48,8 @@ class SimpleWindow{
     void DrawContent();
 
     public:
+        Vector2 position;
+        Vector2 size;
         WindowItem item;
         bool isActive = false;
 
@@ -58,5 +57,5 @@ class SimpleWindow{
 
         }
         SimpleWindow(WindowItem item, Vector2 position, Vector2 size);
-        void DrawSimpleWindow();
+        void DrawSimpleWindow(Vector2 newPosition, Vector2 newSize);
 };

@@ -14,22 +14,22 @@ ListMenu::ListMenu(int numberOfMenus, MenuItem* menuItems): numberOfMenus(number
 
 void ListMenu::DrawMenu(int X){
 
-    int itemheight = numberOfMenus * (BUTTON_HEIGHT + 10);
+    int itemheight = numberOfMenus * (BUTTON_HEIGHT + BasedOnScreenHeight(10));
 
     DrawLine(X, SCREEN_HEIGHT/2 - itemheight/2, X, SCREEN_HEIGHT/2 - itemheight/2, FOREGROUND_MAIN);
     DrawLine(X + 1, SCREEN_HEIGHT/2 - itemheight/2, X + 1, SCREEN_HEIGHT/2 - itemheight/2 + itemheight, FOREGROUND_MAIN);
     DrawLine(X + 2, SCREEN_HEIGHT/2 - itemheight/2, X + 2, SCREEN_HEIGHT/2 - itemheight/2 + itemheight, FOREGROUND_MAIN);
 
     float middlePoint = numberOfMenus/2;
-    DrawRectangle(X + 125.0f - 190/2, SCREEN_HEIGHT/2 - static_cast<float>(BUTTON_HEIGHT + 5) * (numberOfMenus - middlePoint), 220, itemheight, BACKGROUND_FOURTH);
+    DrawRectangle(X + 30, SCREEN_HEIGHT/2 - static_cast<float>(BUTTON_HEIGHT + 5) * (numberOfMenus - middlePoint), BUTTON_WIDTH + BasedOnScreenWidth(30), itemheight, BACKGROUND_FOURTH);
     for(int i = 0; i < numberOfMenus; i++){
         int BUTTON_Y = SCREEN_HEIGHT/2 - static_cast<float>(BUTTON_HEIGHT + 5) * (i - middlePoint);
-        menuButtons[i].DrawButton(Vector2{X + 125.0f, SCREEN_HEIGHT/2 - static_cast<float>(BUTTON_HEIGHT + 5) * (i - middlePoint)}, i == currentSelection);
-        DrawLine(X + 125.0f - 190/2, BUTTON_Y - 17.5f, X + 125.0f + 190 - 190/2, BUTTON_Y - 17.5f, FOREGROUND_MAIN);
-        DrawLine(X + 125.0f - 190/2, BUTTON_Y + 17.5f, X + 125.0f + 190 - 190/2, BUTTON_Y + 17.5f, FOREGROUND_MAIN);
+        menuButtons[i].DrawButton(Vector2{X + 30.0f + BUTTON_WIDTH/2, SCREEN_HEIGHT/2 - static_cast<float>(BUTTON_HEIGHT + 5) * (i - middlePoint)}, i == currentSelection);
+        DrawLine(X + 30.0f, BUTTON_Y - BUTTON_HEIGHT/2, X + 30.0f + BUTTON_WIDTH, BUTTON_Y - BUTTON_HEIGHT/2, FOREGROUND_MAIN);
+        DrawLine(X + 30.0f, BUTTON_Y + BUTTON_HEIGHT/2, X + 30.0f + BUTTON_WIDTH, BUTTON_Y + BUTTON_HEIGHT/2, FOREGROUND_MAIN);
         menuButtons[i].Update();
     }
-    DrawLine(X + 125.0f + 190/2 + 10, SCREEN_HEIGHT/2 - 100, X + 125.0f + 190/2 + 10, SCREEN_HEIGHT/2 + 100, FOREGROUND_MAIN);
+    DrawLine(X + 30.0f + BUTTON_WIDTH + BasedOnScreenWidth(10), SCREEN_HEIGHT/2 - itemheight/4, X + 30.0f + BUTTON_WIDTH + BasedOnScreenWidth(10), SCREEN_HEIGHT/2 + itemheight/4, FOREGROUND_MAIN);
 }
 
 void ListMenu::UpdateMenu(){
@@ -61,23 +61,29 @@ void SimpleWindow::DrawWindowBackground(){
 }
 
 void SimpleWindow::DrawContent(){
-    DrawTexturePro(item.coverImage, Rectangle{0, 0, item.coverImage.width + 0.0f, item.coverImage.height + 0.0f}, 
+
+    float heightFactor = size.y/(item.coverImage.height * (size.x/ item.coverImage.width));
+
+    DrawTexturePro(item.coverImage, Rectangle{0, 0, static_cast<float>(item.coverImage.width), static_cast<float>(item.coverImage.height/2)* heightFactor}, 
                                     Rectangle{
                                         position.x - size.x / 2 + 5, 
                                         position.y + headerBarHeight + 10 - size.y / 2, 
                                         static_cast<float>(size.x - 10), 
-                                        static_cast<float>(size.x * item.coverImage.height/item.coverImage.width)}, 
+                                        static_cast<float>(size.y * 0.7f)}, 
                                         Vector2{}, 
                                         0, 
                                         WHITE
                                     );
     
-    DrawHeader(item.title.c_str(), Vector2{position.x + 5, position.y + 190}, 36);
-    DrawNormalText(item.description.c_str(), Vector2{position.x, position.y + 220}, 16, true);
+    DrawHeader(item.title.c_str(), Vector2{position.x - size.x/2 + 5, position.y + size.y * 0.6f/2}, HEADER_3_FONT_SIZE, false);
+    DrawNormalText(item.description.c_str(), Vector2{position.x - size.x / 2 + 5, position.y + size.y * 0.6f/2 + BasedOnScreenHeight(30)}, TEXT_FONT_SIZE, false);
     //DrawTexture(item.coverImage, position.x - size.x / 2, position.y - size.y/2 + headerBarHeight, WHITE);
 }
 
-void SimpleWindow::DrawSimpleWindow(){
+void SimpleWindow::DrawSimpleWindow(Vector2 newPosition, Vector2 newSize){
+    this->position = newPosition;
+    this->size = newSize;
+
     if(isActive){
         DrawHeaderBar();
         DrawWindowBackground();

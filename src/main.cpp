@@ -26,6 +26,19 @@ enum Screen: uint8_t{
     CONTACT
 };
 
+float SCREEN_WIDTH = INITIAL_SCREEN_WIDTH;
+float SCREEN_HEIGHT = INITIAL_SCREEN_HEIGHT;
+float TITLE_FONT_SIZE = INITIAL_MAIN_TITLE_FONT_SIZE;
+float SUBHEADER_FONT_SIZE = INITIAL_SUBHEADER_FONT_SIZE;
+float HEADER_1_FONT_SIZE = INITIAL_HEADER_1_FONT_SIZE;
+float HEADER_2_FONT_SIZE = INITIAL_HEADER_2_FONT_SIZE;
+float HEADER_3_FONT_SIZE = INITIAL_HEADER_3_FONT_SIZE;
+float TEXT_FONT_SIZE = INITIAL_TEXT_FONT_SIZE;
+float HORIZONTAL_CLAMP_DIFFERENCE = INITIAL_HORIZONTAL_CLAMP_DIFFERENCE;
+float HORIZONTAL_DRAW_START_DISTANCE = 0;
+float BUTTON_WIDTH = INITIAL_BUTTON_WIDTH;
+float BUTTON_HEIGHT = INITIAL_BUTTON_HEIGHT;
+
 Font font;
 Texture NavIcons[5];
 Music BackgroundMusic;
@@ -42,6 +55,22 @@ Screen currentScreen = HOME;
 Texture &GetNavIcon(Screen type)
 {
     return NavIcons[type];
+}
+
+float BasedOnScreenHeight(float Original){
+    return SCREEN_HEIGHT * Original/INITIAL_SCREEN_HEIGHT;
+}
+
+float BasedOnScreenWidth(float Original){
+    return SCREEN_WIDTH * Original/INITIAL_SCREEN_WIDTH;
+}
+
+float BasedOnScreenHeightCapped(float Original, float min, float max){
+    return std::clamp(BasedOnScreenHeight(Original), min, max);
+}
+
+float BasedOnScreenWidthCapped(float Original, float min, float max){
+    return std::clamp(BasedOnScreenWidth(Original), min, max);
 }
 
 void DrawBackground()
@@ -84,23 +113,23 @@ void DrawNavButton(float positionX, float positionY, int iconId, const char *tex
     if(iconType == currentScreen){
         ForegroundColor = BACKGROUND_TERTIARY;
         BackgroundColor = FOREGROUND_MAIN;
-        DrawRectangle(positionX, positionY, 190, 50, BackgroundColor);
+        DrawRectangle(positionX, positionY, BUTTON_WIDTH, 50, BackgroundColor);
     }
 
-    DrawRectangle(positionX, positionY, 190, BUTTON_HEIGHT, BackgroundColor);
+    DrawRectangle(positionX, positionY, BUTTON_WIDTH, 35, BackgroundColor);
     DrawTextEx(font, text, Vector2{positionX + 25, positionY + 1}, 34, 0, ForegroundColor);
     DrawTexture(GetNavIcon(iconType), positionX + 3, positionY + 7, ForegroundColor);
 }
 
 void DrawNavBar()
 {
-    DrawNavButton(140, 10, 185, "HOME", HOME);
-    DrawNavButton(350, 10, 186, "ABOUT", ABOUT);
-    DrawNavButton(560, 10, 178, "PROJECTS", PROJECTS);
-    DrawNavButton(770, 10, 149, "SKILLS", SKILLS);
-    DrawNavButton(980, 10, 191, "CONTACT", CONTACT);
+    DrawNavButton(SCREEN_WIDTH/2 - BUTTON_WIDTH/2 - HORIZONTAL_CLAMP_DIFFERENCE, 10, 185, "HOME", HOME);
+    DrawNavButton(SCREEN_WIDTH/2 - BUTTON_WIDTH/2 - HORIZONTAL_CLAMP_DIFFERENCE/2, 10, 186, "ABOUT", ABOUT);
+    DrawNavButton(SCREEN_WIDTH/2 - BUTTON_WIDTH/2, 10, 178, "PROJECTS", PROJECTS);
+    DrawNavButton(SCREEN_WIDTH/2 + BUTTON_WIDTH/2 + 10, 10, 149, "SKILLS", SKILLS);
+    DrawNavButton(SCREEN_WIDTH/2 + BUTTON_WIDTH/2 + HORIZONTAL_CLAMP_DIFFERENCE/2 + 10, 10, 191, "CONTACT", CONTACT);
     DrawNavLines();
-    DrawNormalText("Copyrighted 2024 by HTET AUNG HLAING", Vector2{SCREEN_WIDTH / 2, SCREEN_HEIGHT - 30}, 15, true);
+    DrawNormalText("Copyrighted 2024 by HTET AUNG HLAING", Vector2{SCREEN_WIDTH / 2, SCREEN_HEIGHT - 40}, 15, true);
 }
 
 void UpdateTransparency()
@@ -124,59 +153,47 @@ void UpdateTransparency()
 }
 
 void DrawHomeScreen(){
-    DrawFlickingText("I am looking to fill an backend internship role in 2025 June", Vector2{SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 250}, 20);
-    DrawNormalText("ASPIRING ENTREPRENEUR/DEVELOPER", Vector2{SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 50}, 18, true);
-    DrawHeader("HTET AUNG HLAING", Vector2{SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2}, 96);
-    DrawNormalText("DARE TO MAKE A NEW WAY", Vector2{SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 50}, 18, true);
-    DrawFlickingText("Use your arrows keys or mouse button switch between menus", Vector2{SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 250}, 16);
+    DrawFlickingText("I am looking to fill an backend internship role in 2025 June", Vector2{SCREEN_WIDTH / 2, 100}, INITIAL_TEXT_FONT_SIZE);
+    DrawNormalText("ASPIRING ENTREPRENEUR/DEVELOPER", Vector2{SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - BasedOnScreenHeight(50)}, SUBHEADER_FONT_SIZE, true);
+    DrawHeader("HTET AUNG HLAING", Vector2{SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2}, TITLE_FONT_SIZE);
+    DrawNormalText("DARE TO MAKE A NEW WAY", Vector2{SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + BasedOnScreenHeight(50)}, SUBHEADER_FONT_SIZE, true);
+    DrawFlickingText("Use your arrows keys or mouse button switch between menus", Vector2{SCREEN_WIDTH / 2, SCREEN_HEIGHT - 100}, INITIAL_TEXT_FONT_SIZE);
 }
 
 void DrawAboutScreen(){
-    DrawHeader("HTET AUNG HLAING", Vector2{335, 130}, 64);
-    DrawNormalText("Age : 21; MBTI : ENTP; TimeZone: GMT+8;", Vector2{335, 155}, 16, true);
+    DrawHeader("HTET AUNG HLAING", Vector2{HORIZONTAL_DRAW_START_DISTANCE, 75}, HEADER_1_FONT_SIZE, false);
+    DrawNormalText("Age : 21; MBTI : ENTP; TimeZone: GMT+8;", Vector2{HORIZONTAL_DRAW_START_DISTANCE, 75 + BasedOnScreenHeight(50)}, SUBHEADER_FONT_SIZE, false);
 
-    DrawNormalText("My mission is to boldly push boundaries and embrace uncertainty,", Vector2{140, 180}, 20, false);
-    DrawNormalText("daring to take risks in pursuit of creativity, knowledge and growth. I thrive on", Vector2{140, 180 + 18}, 20, false);
-    DrawNormalText("challenges and embrace failure as an opportunity to learn and evolve. I aim to", Vector2{140, 180 + 18 * 2}, 20, false);
-    DrawNormalText("inspire others, disrupt existing norms and make impact through my effort.", Vector2{140, 180 + 18 * 3}, 20, false);
+    DrawNormalText("My mission is to boldly push boundaries and embrace uncertainty,\ndaring to take risks in pursuit of creativity, knowledge and growth. I thrive on\nchallenges and embrace failure as an opportunity to learn and evolve. I aim to\ninspire others, disrupt existing norms and make impact through my effort.\n\nI have been passionate about programming since I was 12. Starting\nout together with my cousin in a local technology class, I fell in love with the\naspect of creating whatever we wish digitally through the keyboard and mouse.\nAnd then, I came across Unity Game Engine, which I proceeded to spend\nmore than 5-6 years creating prototypes after prototypes just for fun without any\nexternal motivation. I realized I found my ikigai.\nThis was further enhanced by the fact that I was invited to collaborate\nwithin an organization to develop games that made a hit on the market\nUsing that previous experience, I was able to hop onto\nfreelance projects relatively easier\n\nRight now, I am an active student/freelancer hoping to expand my knowledge\nfurther while specializing in AI, C++ and Rapid Application Development.\nLooking forward to collaborate with ya <3", Vector2{HORIZONTAL_DRAW_START_DISTANCE, 75 + BasedOnScreenHeight(80)}, TEXT_FONT_SIZE, false);
 
-    DrawNormalText("I have been passionate about programming since I was 12. Starting ", Vector2{140, 180 + 18 * 5}, 20, false);
-    DrawNormalText("out together with my cousin in a local technology class, I fell in love with the", Vector2{140, 180 + 18 * 6}, 20, false);
-    DrawNormalText("aspect of creating whatever we wish digitally through the keyboard and mouse.", Vector2{140, 180 + 18 * 7}, 20, false);
+    DrawHeader("EXPERIENCES", Vector2{SCREEN_WIDTH/2, 75}, HEADER_2_FONT_SIZE, false);
+    DrawNormalText("Research Assistant @ Centre of Research and Development of IOT (APU) - Present\nResearch Head @ Competitive Programming Club (APU) - Present\nFreelance Software Developer @ Gnosis Labs - 2023\nProject Manager/ Game Developer @ UNDISCLOSED - 2022", Vector2{SCREEN_WIDTH/2, 75 + BasedOnScreenHeight(40)}, TEXT_FONT_SIZE, false);
+    
+    DrawHeader("TECHNOLOGIES AND TOOLS", Vector2{SCREEN_WIDTH/2, 75 + BasedOnScreenHeight(140)}, HEADER_2_FONT_SIZE, false);
+    DrawNormalText("- Docker\n- Emscripten\n- C++\n- C#\n- Firebase\n- Supabase\n- AWS\n- Unity", Vector2{SCREEN_WIDTH/2, 75 + BasedOnScreenHeight(180)}, TEXT_FONT_SIZE, false);
+}
 
-    DrawNormalText("And then, I came across Unity Game Engine, which I proceeded to spend", Vector2{140, 180 + 18 * 9}, 20, false);
-    DrawNormalText("more than 5-6 years creating prototypes after prototypes just for fun without any", Vector2{140, 180 + 18 * 10}, 20, false);
-    DrawNormalText("external motivation. I realized I found my ikigai.", Vector2{140, 180 + 18 * 11}, 20, false);
-
-    DrawNormalText("This was further enhanced by the fact that I was invited to collaborate", Vector2{140, 180 + 18 * 13}, 20, false);
-    DrawNormalText("within an organization to develop games that made a hit on the market", Vector2{140, 180 + 18 * 14}, 20, false);
-    DrawNormalText("Using that previous experience, I was able to hop onto", Vector2{140, 180 + 18 * 15}, 20, false);
-    DrawNormalText("freelance projects relatively easier", Vector2{140, 180 + 18 * 16}, 20, false);
-
-    DrawNormalText("Right now, I am an active student/freelancer hoping to expand my knowledge", Vector2{140, 180 + 18 * 18}, 20, false);
-    DrawNormalText("further while specializing in AI, C++ and Rapid Application Development.", Vector2{140, 180 + 18 * 19}, 20, false);
-
-    DrawNormalText("Looking forward to collaborate with ya <3", Vector2{140, 180 + 18 * 21}, 20, false);
-
-    DrawHeader("EXPERIENCES", Vector2{800, 134}, 48);
-    DrawNormalText("Research Assistant @ Centre of Research and Development of IOT (APU) - Present", Vector2{703, 180}, 20, false);
-    DrawNormalText("Research Head @ Competitive Programming Club (APU) - Present", Vector2{703, 180 + 18}, 20, false);
-    DrawNormalText("Freelance Software Developer @ Gnosis Labs - 2023", Vector2{703, 180 + 18 * 2}, 20, false);
-    DrawNormalText("Project Manager/ Game Developer @ UNDISCLOSED - 2022", Vector2{703, 180 + 18 * 3}, 20, false);
-
-    DrawHeader("TECHNOLOGIES AND TOOLS", Vector2{910, 180 + 18 * 6}, 48);
-    DrawNormalText("- Docker", Vector2{703, 180 + 18 * 8}, 20, false);
-    DrawNormalText("- Emscripten", Vector2{703, 180 + 18 * 9}, 20, false);
-    DrawNormalText("- C++", Vector2{703, 180 + 18 * 10}, 20, false);
-    DrawNormalText("- C#", Vector2{703, 180 + 18 * 11}, 20, false);
-    DrawNormalText("- Firebase", Vector2{703, 180 + 18 * 12}, 20, false);
-    DrawNormalText("- Supabase", Vector2{703, 180 + 18 * 13}, 20, false);
-    DrawNormalText("- AWS", Vector2{703, 180 + 18 * 14}, 20, false);
-    DrawNormalText("- Unity", Vector2{703, 180 + 18 * 15}, 20, false);
+void Update(){
+    SCREEN_WIDTH = GetScreenWidth();
+    SCREEN_HEIGHT = GetScreenHeight();
+    TITLE_FONT_SIZE = BasedOnScreenHeightCapped(INITIAL_MAIN_TITLE_FONT_SIZE, 0, INITIAL_MAIN_TITLE_FONT_SIZE);
+    SUBHEADER_FONT_SIZE = BasedOnScreenHeightCapped(INITIAL_SUBHEADER_FONT_SIZE, 0, INITIAL_SUBHEADER_FONT_SIZE);
+    HEADER_1_FONT_SIZE = BasedOnScreenHeightCapped(INITIAL_HEADER_1_FONT_SIZE, 0, INITIAL_HEADER_1_FONT_SIZE);
+    HEADER_2_FONT_SIZE = BasedOnScreenHeightCapped(INITIAL_HEADER_2_FONT_SIZE, 0, INITIAL_HEADER_2_FONT_SIZE);
+    HEADER_3_FONT_SIZE = BasedOnScreenHeightCapped(INITIAL_HEADER_3_FONT_SIZE, 0, INITIAL_HEADER_3_FONT_SIZE);
+    TEXT_FONT_SIZE = BasedOnScreenHeight(INITIAL_TEXT_FONT_SIZE);
+    HORIZONTAL_CLAMP_DIFFERENCE = BasedOnScreenWidthCapped(INITIAL_HORIZONTAL_CLAMP_DIFFERENCE, 0, INITIAL_HORIZONTAL_CLAMP_DIFFERENCE);
+    BUTTON_WIDTH = BasedOnScreenWidthCapped(INITIAL_BUTTON_WIDTH, 0, INITIAL_BUTTON_WIDTH);
+    BUTTON_HEIGHT = BasedOnScreenHeightCapped(INITIAL_BUTTON_HEIGHT, 0, INITIAL_BUTTON_HEIGHT);
+    HORIZONTAL_DRAW_START_DISTANCE = SCREEN_WIDTH/2 - BUTTON_WIDTH/2 - HORIZONTAL_CLAMP_DIFFERENCE;
 }
 
 int main()
-{
+{   
+    #ifdef __EMSCRIPTEN__
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+    #endif
+
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Portfolio");
     InitAudioDevice();
 
@@ -224,12 +241,14 @@ int main()
         DrawBackground();
         
         BeginMode3D(camera);
-        //DrawGrid(15, 2.0f);
-        DrawCubeWires(Vector3{0, 0, 0}, 2, 2, 2, BLACK);
+        DrawCubeWires(Vector3{0, 0, 0}, 2, 2, 2, Color{0, 0, 0, 100});
         EndMode3D();
-        DrawNavBar();
 
-        switch(currentScreen){
+        if(SCREEN_HEIGHT > SCREEN_WIDTH){
+            DrawNormalText("Please turn your device to landscape\nfor better experience", Vector2{SCREEN_WIDTH/2, SCREEN_HEIGHT/2}, HEADER_1_FONT_SIZE, true);
+        }else{
+            DrawNavBar();
+            switch(currentScreen){
             case HOME:
                 DrawHomeScreen();
                 break;
@@ -243,7 +262,7 @@ int main()
                 DrawHomeScreen();
                 break;
         }
-
+        }
         // DrawTextEx(font, "HTET AUNG HLAING", Vector2(SCREEN_WIDTH/2 + 10, SCREEN_HEIGHT/2 + 10), 96, 0, BACKGROUND_TERTIARY);
         // DrawTextEx(font, "HTET AUNG HLAING", Vector2(SCREEN_WIDTH/2, SCREEN_HEIGHT/2), 96, 0, FOREGROUND_MAIN);
         EndDrawing();
@@ -258,6 +277,7 @@ int main()
         if(!IsMouseHovering){
             ShouldPlayMouseHover = true;
         }
+        Update();
     }
     CloseAudioDevice();
     CloseWindow();

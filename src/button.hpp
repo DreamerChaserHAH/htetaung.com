@@ -36,8 +36,8 @@ public:
             //}
         }
 
-        DrawRectangle(position.x - 190/2, position.y - 35/2, 190, 35, BackgroundColor);
-        DrawTextEx(font, text, Vector2{position.x + 25 - 190/2, position.y + 1 - 35/2}, 34, 0, ForegroundColor);
+        DrawRectangle(position.x - BUTTON_WIDTH/2, position.y - BUTTON_HEIGHT/2, BUTTON_WIDTH, BUTTON_HEIGHT, BackgroundColor);
+        DrawTextEx(font, text, Vector2{position.x + 25 - BUTTON_WIDTH/2, position.y + 1 - BUTTON_HEIGHT/2}, BUTTON_HEIGHT, 0, ForegroundColor);
         //DrawTexture(GetNavIcon(iconType), positionX + 3, positionY + 7, ForegroundColor);
     }
     void Update(){
