@@ -205,8 +205,8 @@ int main()
     float resolutionY = static_cast<float>(canvas_get_height());
     
     if(resolutionX > SCREEN_WIDTH && resolutionY > SCREEN_HEIGHT){
-        SCREEN_WIDTH = resolutionX;
-        SCREEN_HEIGHT = resolutionY;
+        SCREEN_WIDTH = resolutionX > resolutionY? resolutionX : resolutionY;
+        SCREEN_HEIGHT = resolutionY > resolutionY? resolutionX : resolutionY;
     }else{
         float factor = resolutionX/resolutionY;
 
