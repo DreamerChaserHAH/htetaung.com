@@ -203,10 +203,16 @@ int main()
     //SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     float resolutionX = static_cast<float>(canvas_get_width());
     float resolutionY = static_cast<float>(canvas_get_height());
-    float factor = resolutionX/resolutionY;
+    
+    if(resolutionX > SCREEN_WIDTH && resolutionY > SCREEN_HEIGHT){
+        SCREEN_WIDTH = resolutionX;
+        SCREEN_HEIGHT = resolutionY;
+    }else{
+        float factor = resolutionX/resolutionY;
 
-    SCREEN_WIDTH = INITIAL_SCREEN_HEIGHT * (resolutionX > resolutionY? factor: 1/factor);
-    SCREEN_HEIGHT = INITIAL_SCREEN_HEIGHT;
+        SCREEN_WIDTH = INITIAL_SCREEN_HEIGHT * (resolutionX > resolutionY? factor: 1/factor);
+        SCREEN_HEIGHT = INITIAL_SCREEN_HEIGHT;
+    }
     cout << SCREEN_WIDTH << " " << SCREEN_HEIGHT << " \n";
     #endif
 
