@@ -211,9 +211,9 @@ int main()
         SCREEN_WIDTH = X;
         SCREEN_HEIGHT = Y;
     }else{
-        float factor = resolutionX/resolutionY;
+        float factor = X/Y;
 
-        SCREEN_WIDTH = INITIAL_SCREEN_HEIGHT * (resolutionX > resolutionY? factor: 1/factor);
+        SCREEN_WIDTH = INITIAL_SCREEN_HEIGHT * (X > Y? factor: 1/factor);
         SCREEN_HEIGHT = INITIAL_SCREEN_HEIGHT;
     }
     cout << SCREEN_WIDTH << " " << SCREEN_HEIGHT << " \n";
