@@ -207,7 +207,7 @@ int main()
     float X = resolutionX > resolutionY? resolutionX : resolutionY;
     float Y = resolutionX > resolutionY? resolutionY : resolutionX;
     
-    float factor = X/Y;
+    float factor = std::clamp(X/Y, X/Y, 100.0f);
 
     SCREEN_HEIGHT = INITIAL_SCREEN_HEIGHT;
     SCREEN_WIDTH = INITIAL_SCREEN_HEIGHT * factor;
