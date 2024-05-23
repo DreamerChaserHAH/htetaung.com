@@ -201,13 +201,12 @@ int main()
 {   
     #ifdef __EMSCRIPTEN__
     //SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-    int w = canvas_get_width();
-    int y = canvas_get_height();
-    cout << w << " " << y << " \n";
-    SCREEN_WIDTH = w > y? w: y;
-    SCREEN_HEIGHT = w > y? y: w;
-    SCREEN_WIDTH *= 0.9;
-    SCREEN_HEIGHT *= 0.9;
+    float resolutionX = static_cast<float>(canvas_get_width());
+    float resolutionY = static_cast<float>(canvas_get_height());
+    float factor = resolutionX/resolutionY;
+
+    SCREEN_WIDTH = INITIAL_SCREEN_HEIGHT * (resolutionX > resolutionY? factor: 1/factor);
+    SCREEN_HEIGHT = INITIAL_SCREEN_HEIGHT;
     cout << SCREEN_WIDTH << " " << SCREEN_HEIGHT << " \n";
     #endif
 
