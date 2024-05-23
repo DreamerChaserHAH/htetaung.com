@@ -126,7 +126,7 @@
 
     
     <div class="emscripten_border">
-      <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+      <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1 onclick="enterFullscreen()"></canvas>
     </div>
 
     <script type='text/javascript'>
@@ -208,6 +208,20 @@
         console.log("Trying");
         canvas.style.height = '100%';
       }
+
+      function enterFullscreen() {
+            if (canvas.requestFullscreen) {
+                canvas.requestFullscreen();
+            } else if (canvas.mozRequestFullScreen) { /* Firefox */
+                canvas.mozRequestFullScreen();
+            } else if (canvas.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
+                canvas.webkitRequestFullscreen();
+            } else if (canvas.msRequestFullscreen) { /* IE/Edge */
+                canvas.msRequestFullscreen();
+            }
+        }
+
+      enterFullscreen()
     </script>
     <script async type="text/javascript" src="portfolio.js"></script>
   </body>
