@@ -239,7 +239,16 @@
       var canvas = document.getElementById('canvas');
       function resizeCanvas(){
         console.log("Trying");
-        canvas.style.height = '100%';
+        const ratio = Math.ceil(window.devicePixelRatio);
+
+        //canvas.clientWidth = window.screen.width;
+        //canvas.clientHeight = window.screen.height;
+        
+        canvas.width = Math.max(window.screen.width, window.screen.height) * ratio;
+        canvas.height = Math.min(window.screen.width, window.screen.height) * ratio;
+        canvas.style.width = `${Math.max(window.screen.width, window.screen.height)}px`;
+        canvas.style.height = `${Math.min(window.screen.width, window.screen.height)}px`;
+        //canvas.style.width = "100%";
       }
 
       function enterFullscreen() {
@@ -255,10 +264,25 @@
             screen.orientation
         }
 
+        function getDPI() {
+          var div = document.createElement( "div");
+          div.style.height = "1in";
+          div.style.width = "1in";
+          div.style.top = "-100%";
+          div.style.left = "-100%";
+          div.style.position = "absolute";
+      
+          document.body.appendChild(div);
+      
+          var result =  div.offsetHeight;
+      
+          document.body.removeChild( div );
+      
+          return result;
+      
+      }
       enterFullscreen()
     </script>
     <script async type="text/javascript" src="portfolio.js"></script>
   </body>
 </html>
-
-
