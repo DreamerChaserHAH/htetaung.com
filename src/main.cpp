@@ -162,7 +162,7 @@ void UpdateTransparency()
 }
 
 void DrawHomeScreen(){
-    DrawFlickingText("I am looking to fill an backend internship role in 2025 June", Vector2{SCREEN_WIDTH / 2, 100}, INITIAL_TEXT_FONT_SIZE);
+    DrawFlickingText("I am looking to fill an backend internship role in 2025 May", Vector2{SCREEN_WIDTH / 2, 100}, INITIAL_TEXT_FONT_SIZE);
     DrawNormalText("ASPIRING ENTREPRENEUR/DEVELOPER", Vector2{SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - BasedOnScreenHeight(50)}, SUBHEADER_FONT_SIZE, true);
     DrawHeader("HTET AUNG HLAING", Vector2{SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2}, TITLE_FONT_SIZE);
     DrawNormalText("DARE TO MAKE A NEW WAY", Vector2{SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + BasedOnScreenHeight(50)}, SUBHEADER_FONT_SIZE, true);
@@ -173,11 +173,15 @@ void DrawAboutScreen(){
     DrawHeader("HTET AUNG HLAING", Vector2{HORIZONTAL_DRAW_START_DISTANCE, 75}, HEADER_1_FONT_SIZE, false);
     DrawNormalText("Age : 21; MBTI : ENTP; TimeZone: GMT+8;", Vector2{HORIZONTAL_DRAW_START_DISTANCE, 75 + BasedOnScreenHeight(50)}, SUBHEADER_FONT_SIZE, false);
 
-    DrawNormalText("My mission is to boldly push boundaries and embrace uncertainty,\ndaring to take risks in pursuit of creativity, knowledge and growth. I thrive on\nchallenges and embrace failure as an opportunity to learn and evolve. I aim to\ninspire others, disrupt existing norms and make impact through my effort.\n\nI have been passionate about programming since I was 12. Starting\nout together with my cousin in a local technology class, I fell in love with the\naspect of creating whatever we wish digitally through the keyboard and mouse.\nAnd then, I came across Unity Game Engine, which I proceeded to spend\nmore than 5-6 years creating prototypes after prototypes just for fun without any\nexternal motivation. I realized I found my ikigai.\nThis was further enhanced by the fact that I was invited to collaborate\nwithin an organization to develop games that made a hit on the market\nUsing that previous experience, I was able to hop onto\nfreelance projects relatively easier\n\nRight now, I am an active student/freelancer hoping to expand my knowledge\nfurther while specializing in AI, C++ and Rapid Application Development.\nLooking forward to collaborate with ya <3", Vector2{HORIZONTAL_DRAW_START_DISTANCE, 75 + BasedOnScreenHeight(80)}, TEXT_FONT_SIZE, false);
+    DrawNormalText("My mission is to boldly push boundaries and embrace uncertainty,\ndaring to take risks in pursuit of creativity, knowledge and growth. I thrive on\nchallenges and embrace failure as an opportunity to learn and evolve. I aim to\ninspire others, disrupt existing norms and make impact through my effort.\n\nI have been passionate about programming since I was 12. Starting\nout together with my cousin in a local technology class, I fell in love with the\naspect of creating whatever we wish digitally through the keyboard and mouse.\nAnd then, I came across Unity Game Engine, which I proceeded to spend\nmore than 5-6 years creating prototypes after prototypes just for fun without any\nexternal motivation. I realized I found my ikigai.\n\nI continued my journey as part-time freelancer while studying starting \nfrom April 2022 gaining a multitude of experience by working on projects\nother than game development. This includes \nDesktop Application Development, Website Development and Mobile Application Development.\n2024 was my hackathon year where I joined a multitude of hackathons and gain \nsubstantial amount of experience to lead, organize and handle high pressure conditions.\n Notably, I achieved great results during November 2024, as I won multiple highly prized bounties in ETHGlobal Bangkok,\n effectively acting as educational scholarship for me upskill myself even further.\n\nMy short term goal is to become a better software developer engineer which\nis on track with my mid-term goal of becoming a competent engineering manager\n\nLooking forward to collaborate with ya <3", Vector2{HORIZONTAL_DRAW_START_DISTANCE, 75 + BasedOnScreenHeight(80)}, TEXT_FONT_SIZE, false);
 
     DrawHeader("EXPERIENCES", Vector2{SCREEN_WIDTH/2, 75}, HEADER_2_FONT_SIZE, false);
-    DrawNormalText("Research Assistant @ Centre of Research and Development of IOT (APU) - Present\nResearch Head @ Competitive Programming Club (APU) - Present\nFreelance Software Developer @ Gnosis Labs - 2023\nProject Manager/ Game Developer @ UNDISCLOSED - 2022", Vector2{SCREEN_WIDTH/2, 75 + BasedOnScreenHeight(40)}, TEXT_FONT_SIZE, false);
+    DrawNormalText("Freelance Software Developer @ Upwork (2022 April - 2023 December)\n", Vector2{SCREEN_WIDTH/2, 75 + BasedOnScreenHeight(40)}, TEXT_FONT_SIZE, false);
     
+    DrawHeader("EDUCATION", Vector2{SCREEN_WIDTH/2, 150}, HEADER_2_FONT_SIZE, false);
+     DrawNormalText("Undergraduate CS (Hons) AI Student @ Asia Pacific University (2023 July - 2026 June)\n", Vector2{SCREEN_WIDTH/2, 150 + BasedOnScreenHeight(40)}, TEXT_FONT_SIZE, false);
+    
+
     DrawHeader("TECHNOLOGIES AND TOOLS", Vector2{SCREEN_WIDTH/2, 75 + BasedOnScreenHeight(140)}, HEADER_2_FONT_SIZE, false);
     DrawNormalText("- Docker\n- Emscripten\n- C++\n- C#\n- Firebase\n- Supabase\n- AWS\n- Unity", Vector2{SCREEN_WIDTH/2, 75 + BasedOnScreenHeight(180)}, TEXT_FONT_SIZE, false);
 }
@@ -212,6 +216,8 @@ int main()
     SCREEN_HEIGHT = INITIAL_SCREEN_HEIGHT;
     SCREEN_WIDTH = INITIAL_SCREEN_HEIGHT * factor;
     cout << SCREEN_WIDTH << " " << SCREEN_HEIGHT << " \n";
+
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT);
     #endif
 
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Portfolio");
