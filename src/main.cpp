@@ -23,6 +23,10 @@ using namespace emscripten;
         return window.screen.height * window.devicePixelRatio;
     });
 
+    EM_JS(int, get_dpi, (), {
+        return getDPI();
+    })
+
 #endif
 
 using std::cout, std::endl;
@@ -191,33 +195,38 @@ void Update(){
     SCREEN_HEIGHT = GetScreenHeight();
     TITLE_FONT_SIZE = BasedOnScreenHeightCapped(INITIAL_MAIN_TITLE_FONT_SIZE, 0, INITIAL_MAIN_TITLE_FONT_SIZE);
     SUBHEADER_FONT_SIZE = BasedOnScreenHeightCapped(INITIAL_SUBHEADER_FONT_SIZE, 0, INITIAL_SUBHEADER_FONT_SIZE);
-    HEADER_1_FONT_SIZE = BasedOnScreenHeightCapped(INITIAL_HEADER_1_FONT_SIZE, 0, INITIAL_HEADER_1_FONT_SIZE);
-    HEADER_2_FONT_SIZE = BasedOnScreenHeightCapped(INITIAL_HEADER_2_FONT_SIZE, 0, INITIAL_HEADER_2_FONT_SIZE);
-    HEADER_3_FONT_SIZE = BasedOnScreenHeightCapped(INITIAL_HEADER_3_FONT_SIZE, 0, INITIAL_HEADER_3_FONT_SIZE);
-    TEXT_FONT_SIZE = BasedOnScreenHeightCapped(INITIAL_TEXT_FONT_SIZE, 0, INITIAL_TEXT_FONT_SIZE);
+    HEADER_1_FONT_SIZE = BasedOnScreenHeightCapped(INITIAL_HEADER_1_FONT_SIZE, 0, INITIAL_HEADER_1_FONT_SIZE + 20);
+    HEADER_2_FONT_SIZE = BasedOnScreenHeightCapped(INITIAL_HEADER_2_FONT_SIZE, 0, INITIAL_HEADER_2_FONT_SIZE + 20);
+    HEADER_3_FONT_SIZE = BasedOnScreenHeightCapped(INITIAL_HEADER_3_FONT_SIZE, 0, INITIAL_HEADER_3_FONT_SIZE + 20);
+    TEXT_FONT_SIZE = BasedOnScreenHeightCapped(INITIAL_TEXT_FONT_SIZE, 0, INITIAL_TEXT_FONT_SIZE + 20);
     HORIZONTAL_CLAMP_DIFFERENCE = BasedOnScreenWidthCapped(INITIAL_HORIZONTAL_CLAMP_DIFFERENCE, 0, INITIAL_HORIZONTAL_CLAMP_DIFFERENCE);
-    BUTTON_WIDTH = BasedOnScreenWidthCapped(INITIAL_BUTTON_WIDTH, 0, INITIAL_BUTTON_WIDTH);
-    BUTTON_HEIGHT = BasedOnScreenHeightCapped(INITIAL_BUTTON_HEIGHT, 0, INITIAL_BUTTON_HEIGHT);
+    BUTTON_WIDTH = BasedOnScreenWidthCapped(INITIAL_BUTTON_WIDTH, 0, INITIAL_BUTTON_WIDTH + 100);
+    BUTTON_HEIGHT = BasedOnScreenHeightCapped(INITIAL_BUTTON_HEIGHT, 0, INITIAL_BUTTON_HEIGHT + 50);
     HORIZONTAL_DRAW_START_DISTANCE = SCREEN_WIDTH/2 - BUTTON_WIDTH/2 - HORIZONTAL_CLAMP_DIFFERENCE;
 }
 
 int main()
 {   
     #ifdef __EMSCRIPTEN__
-    //SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+    int dpi = get_dpi();  // Get the screen DPI
     float resolutionX = static_cast<float>(canvas_get_width());
     float resolutionY = static_cast<float>(canvas_get_height());
-    
-    float X = resolutionX > resolutionY? resolutionX : resolutionY;
-    float Y = resolutionX > resolutionY? resolutionY : resolutionX;
-    
-    float factor = std::clamp(X/Y, static_cast<float>(INITIAL_SCREEN_WIDTH)/INITIAL_SCREEN_HEIGHT, 100.0f);
 
-    SCREEN_HEIGHT = INITIAL_SCREEN_HEIGHT;
-    SCREEN_WIDTH = INITIAL_SCREEN_HEIGHT * factor;
-    cout << SCREEN_WIDTH << " " << SCREEN_HEIGHT << " \n";
+    // Normalize DPI to a baseline value, e.g., 96 DPI as standard
+    float dpiFactor = dpi / 96.0f;  // Adjust factor based on DPI
 
-    SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT);
+    float X = resolutionX > resolutionY ? resolutionX : resolutionY;
+    float Y = resolutionX > resolutionY ? resolutionY : resolutionX;
+
+    // Adjust the factor to include DPI scaling
+    float factor = std::clamp((X / Y), 
+                            static_cast<float>(INITIAL_SCREEN_WIDTH) / INITIAL_SCREEN_HEIGHT, 
+                            100.0f);
+
+    // Scale the screen dimensions
+    SCREEN_HEIGHT = Y;
+    SCREEN_WIDTH = X;
+    SetConfigFlags(FLAG_WINDOW_HIGHDPI);
     #endif
 
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Portfolio");

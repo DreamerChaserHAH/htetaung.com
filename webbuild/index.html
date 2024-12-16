@@ -1,8 +1,13 @@
 <!doctype html>
 <html lang="en-us">
   <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
+    <meta name="description" content="Htet Aung Hlaing's Personal Portfolio Website">
+    <meta name="keywords" content="Developer, Programmer, Myanmar, Game Developer">
+    <meta name="author" content="HTET AUNG HLAING">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="manifest" href="manifest.json">
     <title>HTET AUNG HLAING</title>
     <style>
 
@@ -113,10 +118,30 @@
         font-family: 'Lucida Console', Monaco, monospace;
         outline: none;
       }
+
+      .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+        z-index: 999; /* Ensure it's above other elements */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .content {
+        background-color: white;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    }
     </style>
   </head>
   <body>
 
+    <h1 hidden>HTET AUNG HLAING</h1>
     <div class="spinner" id='spinner' hidden></div>
     <div class="emscripten" id="status" hidden>Downloading...</div>
 
@@ -124,7 +149,15 @@
       <progress value="0" max="100" id="progress" hidden=1></progress>
     </div>
 
-    <button onclick="enterFullscreen()"><img src="https://cdn-icons-png.flaticon.com/512/5642/5642608.png" width="50px" height="50px"/> Enter Full Screen</button>
+    <div class="overlay">
+      <div class="content">
+          <!-- Your content goes here -->
+          <h2>Hey there!</h2>
+          <p>My portfolio website is best viewed in fullscreen mode and landscape mode</p>
+          <button onclick="enterFullscreen()">Enter Full Screen</button>
+      </div>
+    </div>
+
     <div class="emscripten_border">
       <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1 onclick="enterFullscreen()"></canvas>
     </div>
@@ -206,7 +239,16 @@
       var canvas = document.getElementById('canvas');
       function resizeCanvas(){
         console.log("Trying");
-        canvas.style.height = '100%';
+        const ratio = Math.ceil(window.devicePixelRatio);
+
+        //canvas.clientWidth = window.screen.width;
+        //canvas.clientHeight = window.screen.height;
+        
+        canvas.width = Math.max(window.screen.width, window.screen.height) * ratio;
+        canvas.height = Math.min(window.screen.width, window.screen.height) * ratio;
+        canvas.style.width = `${Math.max(window.screen.width, window.screen.height)}px`;
+        canvas.style.height = `${Math.min(window.screen.width, window.screen.height)}px`;
+        //canvas.style.width = "100%";
       }
 
       function enterFullscreen() {
@@ -219,12 +261,28 @@
             } else if (canvas.msRequestFullscreen) { /* IE/Edge */
                 canvas.msRequestFullscreen();
             }
+            screen.orientation
         }
 
+        function getDPI() {
+          var div = document.createElement( "div");
+          div.style.height = "1in";
+          div.style.width = "1in";
+          div.style.top = "-100%";
+          div.style.left = "-100%";
+          div.style.position = "absolute";
+      
+          document.body.appendChild(div);
+      
+          var result =  div.offsetHeight;
+      
+          document.body.removeChild( div );
+      
+          return result;
+      
+      }
       enterFullscreen()
     </script>
     <script async type="text/javascript" src="portfolio.js"></script>
   </body>
 </html>
-
-
