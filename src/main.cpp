@@ -23,10 +23,6 @@ using namespace emscripten;
         return window.screen.height * window.devicePixelRatio;
     });
 
-    EM_JS(int, get_dpi, (), {
-        return getDPI();
-    })
-
 #endif
 
 using std::cout, std::endl;
@@ -129,7 +125,7 @@ void DrawNavButton(float positionX, float positionY, int iconId, const char *tex
         DrawRectangle(positionX, positionY, BUTTON_WIDTH, 50, BackgroundColor);
     }
 
-    DrawRectangle(positionX, positionY, BUTTON_WIDTH, 35, BackgroundColor);
+    DrawRectangle(positionX, positionY, BUTTON_WIDTH, BUTTON_HEIGHT, BackgroundColor);
     DrawTextEx(font, text, Vector2{positionX + 25, positionY + 1}, 34, 0, ForegroundColor);
     DrawTexture(GetNavIcon(iconType), positionX + 3, positionY + 7, ForegroundColor);
 }
@@ -207,13 +203,11 @@ void Update(){
 
 int main()
 {   
-    #ifdef __EMSCRIPTEN__
-    int dpi = get_dpi();  // Get the screen DPI
+    #ifdef __EMSCRIPTEN__ // Get the screen DPI
     float resolutionX = static_cast<float>(canvas_get_width());
     float resolutionY = static_cast<float>(canvas_get_height());
 
     // Normalize DPI to a baseline value, e.g., 96 DPI as standard
-    float dpiFactor = dpi / 96.0f;  // Adjust factor based on DPI
 
     float X = resolutionX > resolutionY ? resolutionX : resolutionY;
     float Y = resolutionX > resolutionY ? resolutionY : resolutionX;
