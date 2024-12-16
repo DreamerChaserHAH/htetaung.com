@@ -1,0 +1,2 @@
+/Users/victormak/emsdk/upstream/emscripten/emar qc libtext.a CMakeFiles/text.dir/src/text.cpp.o
+/Users/victormak/emsdk/upstream/emscripten/emranlib libtext.a

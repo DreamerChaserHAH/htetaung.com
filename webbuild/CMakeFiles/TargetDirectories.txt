@@ -1,0 +1,6 @@
+/Users/victormak/Projects/Personal/Projects/htetaung.com/webbuild/CMakeFiles/portfolio.dir
+/Users/victormak/Projects/Personal/Projects/htetaung.com/webbuild/CMakeFiles/projects.dir
+/Users/victormak/Projects/Personal/Projects/htetaung.com/webbuild/CMakeFiles/menu.dir
+/Users/victormak/Projects/Personal/Projects/htetaung.com/webbuild/CMakeFiles/text.dir
+/Users/victormak/Projects/Personal/Projects/htetaung.com/webbuild/CMakeFiles/edit_cache.dir
+/Users/victormak/Projects/Personal/Projects/htetaung.com/webbuild/CMakeFiles/rebuild_cache.dir

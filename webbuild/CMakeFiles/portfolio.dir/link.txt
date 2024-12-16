@@ -1,0 +1,1 @@
+/Users/victormak/emsdk/upstream/emscripten/em++ -Wno-narrowing  -s USE_GLFW=3 -s ASSERTIONS=1 -s WASM=1 -s ASYNCIFY -s ERROR_ON_UNDEFINED_SYMBOLS=0 -sALLOW_MEMORY_GROWTH --bind --memory --preload-file /Users/victormak/Projects/Personal/Projects/htetaung.com/resources@resources @CMakeFiles/portfolio.dir/objects1.rsp -o portfolio.html @CMakeFiles/portfolio.dir/linkLibs.rsp

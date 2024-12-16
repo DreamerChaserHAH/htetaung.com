@@ -1,0 +1,2 @@
+/Users/victormak/emsdk/upstream/emscripten/emar qc libprojects.a CMakeFiles/projects.dir/src/projects.cpp.o
+/Users/victormak/emsdk/upstream/emscripten/emranlib libprojects.a

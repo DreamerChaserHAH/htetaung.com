@@ -1,0 +1,2 @@
+/Users/victormak/emsdk/upstream/emscripten/emar qc libmenu.a CMakeFiles/menu.dir/src/menu.cpp.o
+/Users/victormak/emsdk/upstream/emscripten/emranlib libmenu.a
